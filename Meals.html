@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar + Logo + Submenu with Image Cards</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+	  font-size: 28px;
+    }
+
+    .logo {
+      padding: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: #1a252f;
+    }
+
+    .tab {
+      padding: 15px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tab:hover { background: #34495e; }
+    .tab.active { background: #1abc9c; }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Submenu */
+    .submenu {
+      background: #ecf0f1;
+      padding: 15px;
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .submenu button {
+      padding: 8px 12px;
+      border: none;
+      background: #bdc3c7;
+      cursor: pointer;
+      border-radius: 4px;
+	  font-size: 28px;
+	  border-radius: 12px;
+    }
+
+    .submenu button.active {
+      background: #3498db;
+      color: white;
+    }
+
+    /* Content Grid */
+    .content {
+      padding: 15px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .card p {
+      margin: 10px;
+      font-size: 28px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+   
+    <div class="logo" >St George Kitchen</div>
+    <div class="tab active" onclick="selectTab(event, 'breakfast')">Breakfast</div>
+    <div class="tab" onclick="selectTab(event, 'lunch')">Lunch</div>
+    <div class="tab" onclick="selectTab(event, 'dinner')">Dinner</div>
+	
+  </div>
+
+<div class="main">
+  <div class="submenu" id="submenu"></div>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+const data = {
+  breakfast: {
+    submenu: ['Hot Meals', 'Cereal','Breads','Drinks','Desert'],
+    content: {
+      'Hot Meals': [
+        {img :'images/ScrambelEgg.jpg', text:'Scambel Egg'},
+        {img :'images/bakedbeans.jpg', text:'Baked Been'},
+		{img :'images/spaghetti.jpg', text:'Spageti with Tomato sauce'},
+        {img :'images/PancakeSyrup.jpg', text:'Pan Cake (Tuesday,Thursday and Saturday)'},
+		{img :'images/boilegg.jpg', text:'Boil Egg'}
+      ],
+      'Cereal': [
+        {img:'images/weetbix.jpg', text:'Weet Bix'},
+        {img:'images/Cornflake.jpg', text:'Corn Flake'},
+		{img:'images/ricepop.jpg', text:'Rice Pops'},
+        {img:'images/SultanaB.jpg', text:'Sultana Bran'},
+		{img:'images/museli.jpg', text:'Museli'},
+		{img:'images/Roats.jpg', text:'Rolled Oats'},
+		{img:'images/PRoats.jpg', text:'Puree Rolled Oats'},
+        {img:'images/semolina.jpg', text:'Semolina'},
+		{img:'images/Ckcongee.jpg', text:'Chiken Congee'},
+		{img:'images/milk150.jpg', text:'Full Cream Milk 150ml'},
+        {img:'images/Smilk150.jpg', text:'Skim Cream Milk 150ml'},
+		{img:'images/Soy.jpg', text:'Soy Milk'}
+      ],
+	  'Breads': [
+        {img:'images/BBread.jpg', text:'Brown Bread'},
+        {img:'images/WBread.jpg', text:'White Bread'},
+		{img:'images/GFBread.jpg', text:'Glueten Free Bread'},
+        {img:'images/MGBread.jpg', text:'Multigrain Bread'},
+		{img:'images/Rbread.jpg', text:'Raisin Bread'},
+        {img:'images/Margarin.jpg', text:'Margarin'},
+		{img:'images/Butter.jpg', text:'Butter'},
+		{img:'images/SBjam.jpg', text:'Strawbery Jam'},
+        {img:'images/APjam.jpg', text:'Apricot Jam'},
+		{img:'images/MMjam.jpg', text:'Marmaled Jam'},
+		{img:'images/honey.jpg', text:'Honey'},
+        {img:'images/Vegimite.jpg', text:'Vegimite)'},
+		{img:'images/PB.jpg', text:'Peanut Butter'}
+      ],
+	  'Drinks': [
+	    {img:'images/tea.jpg', text:'Tea'},        
+        {img:'images/coffee.jpg', text:'Coffee'},
+        {img:'images/Dcoffee.jpg', text:'Decaff Cofee'},
+		{img:'images/sugar.jpg', text:'Sugar'},
+		{img:'images/equal.jpg', text:'Sugar Less'},
+        {img:'images/milk50.jpg', text:'Milk'},		
+		{img:'images/AJ.jpg', text:'Apple Juice'},
+		{img:'images/Oj.jpg', text:'Orange Juice'},
+		{img:'images/milo.jpg', text:'Milo'},
+        {img:'images/Cmilk.jpg', text:'Chocolate Milk'},
+		{img:'images/Smilk.jpg', text:'Strawbery Milk'},
+		{img:'images/Lido.jpg', text:'Lemonede'},
+        {img:'images/LidoDiet.jpg', text:'Diet Lemonade'}
+      ],
+	  'Desert': [
+	    {img:'images/banana.jpg', text:'Banana'},
+		{img:'images/apple.jpg', text:'Apple'},
+		{img:'images/orange.jpg', text:'Orange'}, 
+		{img:'images/Pear.jpg', text:'Pear'},
+		{img:'images/prunes.jpg', text:'Prunes'},
+		{img:'images/custard.jpg', text:'Vanila Custard'},        
+        {img:'images/MBY.jpg', text:'Mix Berry Yogurt'},
+        {img:'images/SBY.jpg', text:'Strawbery Yogurt'},
+		{img:'images/RBY.jpg', text:'Rasberry Yogurt'},		
+		{img:'images/VanillaY.jpg', text:'Vanilla Yogurt'},
+		{img:'images/NaturalY.jpg', text:'Natural Yogurt'},
+		{img:'images/SBJ.jpg', text:'Strawbery Jelly'},
+        {img:'images/RBJ.jpg', text:'Raspberry Jelly'},
+		{img:'images/OrJ.jpg', text:'Orange Jelly'},
+		{img:'images/LimeJ.jpg', text:'Lime Jelly'},
+		{img:'images/DietOrJ.jpg', text:'Diet Orange Jelly'},
+		{img:'images/spcpeaches.jpg', text:'Peaches'},
+		{img:'images/SPC2fruits.jpg', text:'Two fruit'},
+		{img:'images/SPCFSalad.jpg', text:'Fruit Salad'},    
+		{img:'images/SPCPear.jpg', text:'Pear'},
+		{img:'images/SPCApplePuree.jpg', text:'Puree Apple'},
+        {img:'images/RIVIANApearpuree.jpg', text:'Puree Pear'},
+		{img:'images/spcappleapricot.jpg', text:'Puree AppleAppricot'},		
+		{img:'images/cheeseCR.jpg', text:'Cheese Creaker'}
+      ]
+    }
+  },
+  lunch: {
+    submenu: ['Hot Meals Beef Lamb','Hot Meals Chiken Fish', 'Vegitarians Meals','Salads','Sandwiches','Drinks','Desert'],
+    content: {
+      'Hot Meals Beef Lamb': [
+        {img:'images/MeatBalls.jpg', text:'Beef MeatBalls in Napolitana Sauces with Pasta and Vegetables'},
+        {img:'images/SatayBeef.jpg', text:'Satay Beef and Noodles with Vegetables'},
+		{img:'images/RoastBeef.jpg', text:'Roast Beef with Paper Gravy Potato and Vegetables'},
+        {img:'images/ShaphiedPie.jpg', text:'Shaphied Pie and Vegetable'},
+		{img:'images/LambKaftas.jpg', text:'Lamb Kaftas in Tomato Sauces with Rice and Vegetables'},
+        {img:'images/RoastLamb.jpg', text:'Roast Lamb with Mint Gravy Mashed Potato and Vegetables'}
+      ],
+	  'Hot Meals Chiken Fish': [
+        {img:'images/ChickenParmigiana.jpg', text:'Chicken Parmigiana with Roast Potato and Vegetables'},
+        {img:'images/SpanishChicken.jpg', text:'Spanish Chicken with Potato Wedges and Vegetables'},
+		{img:'images/ThaiGreen.jpg', text:'Thai Green Chicken Curry with Rice and Vegetables'},
+        {img:'images/ButterChicken.jpg', text:'Butter Chicken with Rice and Vegetables'},
+		{img:'images/RoastChicken.jpg', text:'Roast Chicken with Gravy, Roast Potato and Vegetables'},
+		{img:'images/ChickenKale.jpg', text:'Chicken Kale and White Bean Soup'},
+        {img:'images/SteamFish.jpg', text:'Steam Fish with Dill Sauce, Mashed Potato and Vegetables'}
+      ],
+      'Vegitarians Meals': [
+       {img:'images/MacaroniCheese.jpg', text:'Macaroni Cheese and Vegetables'},
+        {img:'images/PastaSpinach.jpg', text:'Pasta with Spinach Mushroom Cream Sauce and Vegetables'},
+		{img:'images/PlainOmlet.jpg', text:'Plain Omlet with Bean Ragout and Vegetables'},
+        {img:'images/PumpkinFritters.jpg', text:'Pumpkin Fritters with Tomato Sauce and Vegetables'},
+		{img:'images/SpinachRicotta.jpg', text:'Spinach and Ricotta Ravioli with Tomato Sauce Herb Cheese Crumb and Vegetables'},
+        {img:'images/SpinachRisotto.jpg', text:'Spinach Risotto Slice and Vegetables'},
+		{img:'images/CurriedPeas.jpg', text:'Curried Peas and Tofu Rice and Vegetables'},
+		{img:'images/Eggplant.jpg', text:'Eggplant Ratatouille, Roast Potato and Vegetables'},
+        {img:'images/FlafelCouscous.jpg', text:'Flafel with Couscous and Tomato, Basil and Red Lentil Sauce'},
+		{img:'images/MexicanBean.jpg', text:'Mexican Bean Hot Pot with Rice and Corn, Capsicum and Red Onion Salsa'},
+		{img:'images/SavouryRice.jpg', text:'Savoury Rice with Red Lentil Sauce and Roast Vegetables Medly'},
+        {img:'images/ThaiCurry.jpg', text:'Thai Curry with Plant Based Meetballs, Rice and Vegetables)'}
+      ],
+	  'Salads': [
+        {img:'images/tunasalad.jpg', text:'Tuna Salad (Monday)'},
+        {img:'images/eggcheesesalad.jpg', text:'Egg and Cheese Salad'},	
+		{img:'images/cheesesalad.jpg', text:'Cheese Salad'},			
+        {img:'images/beansalad.jpg', text:'Bean Salad'},
+		{img:'images/eggsalad.jpg', text:'Egg Salad'},
+        {img:'images/roastbeefsalad.jpg', text:'Roast Beef Salad (Sunday)'}
+      ],
+	  'Sandwiches': [
+        {img:'images/hamtom.jpg', text:'Ham Tomato'},
+        {img:'images/chikenmayo.jpg', text:'Chicken Mayonnaise'},
+		{img:'images/eggmayo.jpg', text:'Egg Mayonnaise'},
+        {img:'images/cheesesandw.jpg', text:'Cheese'},
+		{img:'images/saladsandw.jpg', text:'Salad'},
+        {img:'images/roastporksandw.jpg', text:'Roast Pork and Apple Sauce (Monday)'},
+		{img:'images/roastbeefpicklesandw.jpg', text:'Roast Beef and Pickle (Tuesday)'},
+        {img:'images/tunasandw.jpg', text:'Tuna Mayonnaise (Thursday)'},
+		{img:'images/cheesepickelsandw.jpg', text:'Cheese Pickle (Friday)'}
+      ],
+	   'Drinks': [
+	    {img:'images/tea.jpg', text:'Tea'},        
+        {img:'images/coffee.jpg', text:'Coffee'},
+        {img:'images/Dcoffee.jpg', text:'Decaff Cofee'},
+		{img:'images/sugar.jpg', text:'Sugar'},
+		{img:'images/equal.jpg', text:'Sugar Less'},
+        {img:'images/milk50.jpg', text:'Milk'},		
+		{img:'images/AJ.jpg', text:'Apple Juice'},
+		{img:'images/Oj.jpg', text:'Orange Juice'},
+		{img:'images/milo.jpg', text:'Milo'},
+        {img:'images/Cmilk.jpg', text:'Chocolate Milk'},
+		{img:'images/Smilk.jpg', text:'Strawbery Milk'},
+		{img:'images/Lido.jpg', text:'Lemonede'},
+        {img:'images/LidoDiet.jpg', text:'Diet Lemonade'}
+      ],
+	  'Desert': [
+	   {img:'images/IceCVan.jpg', text:'Vanila Ice Cream'},
+		{img:'images/IceCVanL.jpg', text:'Low Fat Vanila Ice Cream'},
+		{img:'images/IceCoconut.jpg', text:'Coconut Ice Cream'},
+		{img:'images/CRice.jpg', text:'Cream Rice'},
+		{img:'images/CChoc.jpg', text:'Cream Chocolate'},
+		{img:'images/CCaramel.jpg', text:'Cream Caramel'},
+		{img:'images/CVanila.jpg', text:'Cream Vanila Panacota'},
+		
+		{img:'images/CarrotCk.jpg', text:'Carrot Cake'},
+		{img:'images/OrangePoppyCk.jpg', text:'Orange Poppy Seed Cake'},
+		{img:'images/LemonDrCk.jpg', text:'Lemon Cake'},
+		{img:'images/AppleCrumbleCk.jpg', text:'Apple Crumble Cake'},
+		{img:'images/ChocolateLavaCk.jpg', text:'Chocolate Lava Cake'},
+		{img:'images/StickyDateCk.jpg', text:'Sticky Date Pudding'},
+		
+	    {img:'images/banana.jpg', text:'Banana'},
+		{img:'images/apple.jpg', text:'Apple'},
+		{img:'images/orange.jpg', text:'Orange'}, 
+		{img:'images/Pear.jpg', text:'Pear'},
+		{img:'images/prunes.jpg', text:'Prunes'},
+		{img:'images/custard.jpg', text:'Vanila Custard'},        
+        {img:'images/MBY.jpg', text:'Mix Berry Yogurt'},
+        {img:'images/SBY.jpg', text:'Strawbery Yogurt'},
+		{img:'images/RBY.jpg', text:'Rasberry Yogurt'},		
+		{img:'images/VanillaY.jpg', text:'Vanilla Yogurt'},
+		{img:'images/NaturalY.jpg', text:'Natural Yogurt'},
+		{img:'images/SBJ.jpg', text:'Strawbery Jelly'},
+        {img:'images/RBJ.jpg', text:'Raspberry Jelly'},
+		{img:'images/OrJ.jpg', text:'Orange Jelly'},
+		{img:'images/LimeJ.jpg', text:'Lime Jelly'},
+		{img:'images/DietOrJ.jpg', text:'Diet Orange Jelly'},
+		{img:'images/spcpeaches.jpg', text:'Peaches'},
+		{img:'images/SPC2fruits.jpg', text:'Two fruit'},
+		{img:'images/SPCFSalad.jpg', text:'Fruit Salad'},    
+		{img:'images/SPCPear.jpg', text:'Pear'},
+		{img:'images/SPCApplePuree.jpg', text:'Puree Apple'},
+        {img:'images/RIVIANApearpuree.jpg', text:'Puree Pear'},
+		{img:'images/spcappleapricot.jpg', text:'Puree AppleAppricot'},		
+		{img:'images/cheeseCR.jpg', text:'Cheese Creaker'}
+      ]
+    }
+  },
+  dinner: {
+     submenu: ['Hot Meals Beef Lamb','Hot Meals Chiken Fish', 'Vegitarians Meals','Soup','Sandwiches','Drinks','Desert'],
+     content: {
+      'Hot Meals Beef Lamb': [
+       {img:'images/MeatBalls.jpg', text:'Beef MeatBalls in Napolitana Sauces with Pasta and Vegetables'},
+        {img:'images/SatayBeef.jpg', text:'Satay Beef and Noodles with Vegetables'},
+		{img:'images/RoastBeef.jpg', text:'Roast Beef with Paper Gravy Potato and Vegetables'},
+        {img:'images/ShaphiedPie.jpg', text:'Shaphied Pie and Vegetable'},
+		{img:'images/LambKaftas.jpg', text:'Lamb Kaftas in Tomato Sauces with Rice and Vegetables'},
+        {img:'images/RoastLamb.jpg', text:'Roast Lamb with Mint Gravy Mashed Potato and Vegetables'}
+      ],
+	  'Hot Meals Chiken Fish': [
+        {img:'images/ChickenParmigiana.jpg', text:'Chicken Parmigiana with Roast Potato and Vegetables'},
+        {img:'images/SpanishChicken.jpg', text:'Spanish Chicken with Potato Wedges and Vegetables'},
+		{img:'images/ThaiGreen.jpg', text:'Thai Green Chicken Curry with Rice and Vegetables'},
+        {img:'images/ButterChicken.jpg', text:'Butter Chicken with Rice and Vegetables'},
+		{img:'images/RoastChicken.jpg', text:'Roast Chicken with Gravy, Roast Potato and Vegetables'},
+		{img:'images/ChickenKale.jpg', text:'Chicken Kale and White Bean Soup'},
+        {img:'images/SteamFish.jpg', text:'Steam Fish with Dill Sauce, Mashed Potato and Vegetables'}
+      ],
+      'Vegitarians Meals': [
+        {img:'images/MacaroniCheese.jpg', text:'Macaroni Cheese and Vegetables'},
+        {img:'images/PastaSpinach.jpg', text:'Pasta with Spinach Mushroom Cream Sauce and Vegetables'},
+		{img:'images/PlainOmlet.jpg', text:'Plain Omlet with Bean Ragout and Vegetables'},
+        {img:'images/PumpkinFritters.jpg', text:'Pumpkin Fritters with Tomato Sauce and Vegetables'},
+		{img:'images/SpinachRicotta.jpg', text:'Spinach and Ricotta Ravioli with Tomato Sauce Herb Cheese Crumb and Vegetables'},
+        {img:'images/SpinachRisotto.jpg', text:'Spinach Risotto Slice and Vegetables'},
+		{img:'images/CurriedPeas.jpg', text:'Curried Peas and Tofu Rice and Vegetables'},
+		{img:'images/Eggplant.jpg', text:'Eggplant Ratatouille, Roast Potato and Vegetables'},
+        {img:'images/FlafelCouscous.jpg', text:'Flafel with Couscous and Tomato, Basil and Red Lentil Sauce'},
+		{img:'images/MexicanBean.jpg', text:'Mexican Bean Hot Pot with Rice and Corn, Capsicum and Red Onion Salsa'},
+		{img:'images/SavouryRice.jpg', text:'Savoury Rice with Red Lentil Sauce and Roast Vegetables Medly'},
+        {img:'images/ThaiCurry.jpg', text:'Thai Curry with Plant Based Meetballs, Rice and Vegetables)'}
+      ],
+	  'Soup': [
+        {img:'images/Soup_Tom.jpg', text:'Tomato Soup'},
+        {img:'images/Soup_PM.jpg', text:'Pumpkin Soup'},
+		{img:'images/Soup_C.jpg', text:'Chicken Soup'},
+        {img:'images/Soup_CC.jpg', text:'Chicken Corn Soup'},
+		{img:'images/Soup_PL.jpg', text:'Potato Leek Soup'},
+        {img:'images/Soup_B.jpg', text:'Beef Soup'},
+		{img:'images/Soup_M.jpg', text:'Minesterone Soup'}
+      ],
+	  'Sandwiches': [
+         {img:'images/hamtom.jpg', text:'Ham Tomato'},
+        {img:'images/chikenmayo.jpg', text:'Chicken Mayonnaise'},
+		{img:'images/eggmayo.jpg', text:'Egg Mayonnaise'},
+        {img:'images/cheesesandw.jpg', text:'Cheese'},
+		{img:'images/saladsandw.jpg', text:'Salad'},
+        {img:'images/roastporksandw.jpg', text:'Roast Pork and Apple Sauce (Monday)'},
+		{img:'images/roastbeefpicklesandw.jpg', text:'Roast Beef and Pickle (Tuesday)'},
+        {img:'images/tunasandw.jpg', text:'Tuna Mayonnaise (Thursday)'},
+		{img:'images/cheesepickelsandw.jpg', text:'Cheese Pickle (Friday)'}
+      ],
+	   'Drinks': [
+	    {img:'images/tea.jpg', text:'Tea'},        
+        {img:'images/coffee.jpg', text:'Coffee'},
+        {img:'images/Dcoffee.jpg', text:'Decaff Cofee'},
+		{img:'images/sugar.jpg', text:'Sugar'},
+		{img:'images/equal.jpg', text:'Sugar Less'},
+        {img:'images/milk50.jpg', text:'Milk'},		
+		{img:'images/AJ.jpg', text:'Apple Juice'},
+		{img:'images/Oj.jpg', text:'Orange Juice'},
+		{img:'images/milo.jpg', text:'Milo'},
+        {img:'images/Cmilk.jpg', text:'Chocolate Milk'},
+		{img:'images/Smilk.jpg', text:'Strawbery Milk'},
+		{img:'images/Lido.jpg', text:'Lemonede'},
+        {img:'images/LidoDiet.jpg', text:'Diet Lemonade'}
+      ],
+	  'Desert': [
+	    {img:'images/IceCVan.jpg', text:'Vanila Ice Cream'},
+		{img:'images/IceCVanL.jpg', text:'Low Fat Vanila Ice Cream'},
+		{img:'images/IceCoconut.jpg', text:'Coconut Ice Cream'},
+		{img:'images/CRice.jpg', text:'Cream Rice'},
+		{img:'images/CChoc.jpg', text:'Cream Chocolate'},
+		{img:'images/CCaramel.jpg', text:'Cream Caramel'},
+		{img:'images/CVanila.jpg', text:'Cream Vanila Panacota'},
+		
+		{img:'images/CarrotCk.jpg', text:'Carrot Cake'},
+		{img:'images/OrangePoppyCk.jpg', text:'Orange Poppy Seed Cake'},
+		{img:'images/LemonDrCk.jpg', text:'Lemon Cake'},
+		{img:'images/AppleCrumbleCk.jpg', text:'Apple Crumble Cake'},
+		{img:'images/ChocolateLavaCk.jpg', text:'Chocolate Lava Cake'},
+		{img:'images/StickyDateCk.jpg', text:'Sticky Date Pudding'},
+		
+		
+		
+	    {img:'images/banana.jpg', text:'Banana'},
+		{img:'images/apple.jpg', text:'Apple'},
+		{img:'images/orange.jpg', text:'Orange'}, 
+		{img:'images/Pear.jpg', text:'Pear'},
+		{img:'images/prunes.jpg', text:'Prunes'},
+		{img:'images/custard.jpg', text:'Vanila Custard'},        
+        {img:'images/MBY.jpg', text:'Mix Berry Yogurt'},
+        {img:'images/SBY.jpg', text:'Strawbery Yogurt'},
+		{img:'images/RBY.jpg', text:'Rasberry Yogurt'},		
+		{img:'images/VanillaY.jpg', text:'Vanilla Yogurt'},
+		{img:'images/NaturalY.jpg', text:'Natural Yogurt'},
+		{img:'images/SBJ.jpg', text:'Strawbery Jelly'},
+        {img:'images/RBJ.jpg', text:'Raspberry Jelly'},
+		{img:'images/OrJ.jpg', text:'Orange Jelly'},
+		{img:'images/LimeJ.jpg', text:'Lime Jelly'},
+		{img:'images/DietOrJ.jpg', text:'Diet Orange Jelly'},
+		{img:'images/spcpeaches.jpg', text:'Peaches'},
+		{img:'images/SPC2fruits.jpg', text:'Two fruit'},
+		{img:'images/SPCFSalad.jpg', text:'Fruit Salad'},    
+		{img:'images/SPCPear.jpg', text:'Pear'},
+		{img:'images/SPCApplePuree.jpg', text:'Puree Apple'},
+        {img:'images/RIVIANApearpuree.jpg', text:'Puree Pear'},
+		{img:'images/spcappleapricot.jpg', text:'Puree AppleAppricot'},		
+		{img:'images/cheeseCR.jpg', text:'Cheese Creaker'}
+      ]
+    }
+  
+  }
+  
+  
+  
+  
+};
+
+function selectTab(evt, tabName) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  evt.currentTarget.classList.add('active');
+
+  const submenu = document.getElementById('submenu');
+  submenu.innerHTML='';
+
+  data[tabName].submenu.forEach((item,i)=>{
+    const btn=document.createElement('button');
+    btn.textContent=item;
+    btn.onclick=()=>selectSubmenu(tabName,item,btn);
+    if(i===0) btn.classList.add('active');
+    submenu.appendChild(btn);
+  });
+
+  loadContent(tabName, data[tabName].submenu[0]);
+}
+
+function selectSubmenu(tabName,item,btn){
+  document.querySelectorAll('.submenu button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  loadContent(tabName,item);
+}
+
+function loadContent(tabName,item){
+  const contentDiv=document.getElementById('content');
+  contentDiv.innerHTML='';
+
+  data[tabName].content[item].forEach(card=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.innerHTML=`<img src="${card.img}" alt=""><p>${card.text}</p>`;
+    contentDiv.appendChild(div);
+  });
+}
+
+// Init
+selectTab({currentTarget:document.querySelector('.tab.active')},'breakfast');
+</script>
+
+</body>
+</html>
